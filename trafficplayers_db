@@ -4,10 +4,68 @@ CREATE DATABASE trafficplayers_db;
 -- Use Database
 USE trafficplayers_db;
 
+
 -- Create Tables (1/3) : Klutz
 
+-- USER
+CREATE TABLE user (
+    user_id INT NOT NULL AUTO_INCREMENT,
+    username VARCHAR(100) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_login DATETIME DEFAULT NULL,
 
+    PRIMARY KEY (user_id),
+    UNIQUE KEY uq_username (username)
+);
 
+-- USAGE_SESSION
+CREATE TABLE usage_session (
+    session_id INT NOT NULL AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    started_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ended_at DATETIME DEFAULT NULL,
+    duration_seconds INT NOT NULL DEFAULT 0,
+
+    PRIMARY KEY (session_id),
+
+    CONSTRAINT fk_session_user FOREIGN KEY (user_id)
+        REFERENCES user (user_id) ON DELETE CASCADE,
+
+    CONSTRAINT chk_session_duration
+        CHECK (duration_seconds >= 0),
+
+    CONSTRAINT chk_session_dates
+        CHECK (ended_at IS NULL OR ended_at >= started_at)
+);
+
+-- MEDIA
+CREATE TABLE media (
+    media_id INT NOT NULL AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    media_type ENUM('MP3','MP4','YOUTUBE') NOT NULL,
+    source_location VARCHAR(2048) NOT NULL,
+    date_added DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (media_id),
+
+    CONSTRAINT fk_media_user FOREIGN KEY (user_id)
+        REFERENCES user (user_id) ON DELETE CASCADE
+);
+
+-- PLAYLIST
+CREATE TABLE playlist (
+    playlist_id INT NOT NULL AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    playlist_name VARCHAR(150) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (playlist_id),
+
+    CONSTRAINT fk_playlist_user FOREIGN KEY (user_id)
+        REFERENCES user (user_id) ON DELETE CASCADE
+);
 
 
 
@@ -69,3 +127,58 @@ CREATE TABLE playlist_media (
 
 
 -- Create Tables (3/3) : M***ismaidenless
+
+-- GACHA_TRANSACTION
+CREATE TABLE gacha_transaction (
+    gacha_id INT NOT NULL AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    skin_id INT NOT NULL,
+    currency_spent INT NOT NULL DEFAULT 0,
+    drawn_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (gacha_id),
+
+    CONSTRAINT fk_gacha_user FOREIGN KEY (user_id)
+        REFERENCES user (user_id) ON DELETE CASCADE,
+
+    CONSTRAINT fk_gacha_skin FOREIGN KEY (skin_id)
+        REFERENCES skin (skin_id) ON DELETE CASCADE,
+
+    CONSTRAINT chk_gacha_currency
+        CHECK (currency_spent >= 0)
+);
+
+-- CURRENCY_WALLET
+CREATE TABLE currency_wallet (
+    user_id INT NOT NULL,
+    balance INT NOT NULL DEFAULT 0,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (user_id),
+
+    CONSTRAINT fk_wallet_user FOREIGN KEY (user_id)
+        REFERENCES user (user_id) ON DELETE CASCADE,
+
+    CONSTRAINT chk_wallet_balance
+        CHECK (balance >= 0)
+);
+
+-- CURRENCY_TRANSACTION
+CREATE TABLE currency_transaction (
+    transaction_id INT NOT NULL AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    amount INT NOT NULL,
+    transaction_type ENUM('EARN','SPEND') NOT NULL,
+    transaction_reason VARCHAR(255) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (transaction_id),
+
+    CONSTRAINT fk_currency_user FOREIGN KEY (user_id)
+        REFERENCES user (user_id) ON DELETE CASCADE,
+
+    CONSTRAINT chk_transaction_amount
+        CHECK (amount > 0)
+);
+
