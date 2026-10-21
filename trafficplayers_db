@@ -1,0 +1,19 @@
+-- Database Creation
+CREATE DATABASE trafficplayers_db;
+
+-- Use Database
+USE trafficplayers_db;
+
+-- Create Tables (1/3) : Klutz
+
+
+
+
+
+
+-- Create Tables (2/3) : Zenn
+
+
+
+
+-- Create Tables (3/3) : M***ismaidenless
