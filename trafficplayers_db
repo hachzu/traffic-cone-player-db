@@ -51,7 +51,6 @@ CREATE TABLE playlist (
         REFERENCES `user` (user_id) ON DELETE CASCADE
 );
 
-
 -- Create Tables (2/3) : Zenn
 CREATE TABLE achievement (
     achievement_id    INT NOT NULL AUTO_INCREMENT,
@@ -68,37 +67,37 @@ CREATE TABLE user_achievement (
     unlocked_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, achievement_id),
     CONSTRAINT fk_ua_user        FOREIGN KEY (user_id)
-        REFERENCES user (user_id)               ON DELETE CASCADE,
+        REFERENCES `user` (user_id)              ON DELETE CASCADE,
     CONSTRAINT fk_ua_achievement FOREIGN KEY (achievement_id)
         REFERENCES achievement (achievement_id) ON DELETE CASCADE
 );
 
 CREATE TABLE skin (
-    skin_id INT NOT NULL AUTO_INCREMENT,
-    skin_name VARCHAR(100) NOT NULL,
-    rarity ENUM('COMMON','RARE','EPIC','LEGENDARY') NOT NULL DEFAULT 'COMMON',
+    skin_id         INT NOT NULL AUTO_INCREMENT,
+    skin_name       VARCHAR(100) NOT NULL,
+    rarity          ENUM('COMMON','RARE','EPIC','LEGENDARY') NOT NULL DEFAULT 'COMMON',
     skin_asset_path VARCHAR(500) NOT NULL,
     PRIMARY KEY (skin_id)
 );
 
 CREATE TABLE user_skin (
-    user_id INT NOT NULL,
-    skin_id INT NOT NULL,
+    user_id     INT NOT NULL,
+    skin_id     INT NOT NULL,
     obtained_at DATETIME   NOT NULL DEFAULT CURRENT_TIMESTAMP,
     is_equipped TINYINT(1) NOT NULL DEFAULT 0,
     PRIMARY KEY (user_id, skin_id),
     CONSTRAINT fk_us_user FOREIGN KEY (user_id)
-        REFERENCES user (user_id) ON DELETE CASCADE,
+        REFERENCES `user` (user_id) ON DELETE CASCADE,
     CONSTRAINT fk_us_skin FOREIGN KEY (skin_id)
         REFERENCES skin (skin_id) ON DELETE CASCADE
 );
 
 CREATE TABLE playlist_media (
     playlist_media_id INT NOT NULL AUTO_INCREMENT,
-    playlist_id INT NOT NULL,
-    media_id INT NOT NULL,
-    position INT NOT NULL DEFAULT 0,
-    added_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    playlist_id       INT NOT NULL,
+    media_id          INT NOT NULL,
+    position          INT NOT NULL DEFAULT 0,
+    added_at          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (playlist_media_id),
     UNIQUE KEY uq_playlist_media (playlist_id, media_id),
     CONSTRAINT fk_pm_playlist FOREIGN KEY (playlist_id)
@@ -113,55 +112,44 @@ CREATE TABLE playlist_media (
 
 -- GACHA_TRANSACTION
 CREATE TABLE gacha_transaction (
-    gacha_id INT NOT NULL AUTO_INCREMENT,
-    user_id INT NOT NULL,
-    skin_id INT NOT NULL,
+    gacha_id       INT NOT NULL AUTO_INCREMENT,
+    user_id        INT NOT NULL,
+    skin_id        INT NOT NULL,
     currency_spent INT NOT NULL DEFAULT 0,
-    drawn_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
+    drawn_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (gacha_id),
-
     CONSTRAINT fk_gacha_user FOREIGN KEY (user_id)
-        REFERENCES user (user_id) ON DELETE CASCADE,
-
+        REFERENCES `user` (user_id) ON DELETE CASCADE,
     CONSTRAINT fk_gacha_skin FOREIGN KEY (skin_id)
         REFERENCES skin (skin_id) ON DELETE CASCADE,
-
     CONSTRAINT chk_gacha_currency
         CHECK (currency_spent >= 0)
 );
 
 -- CURRENCY_WALLET
 CREATE TABLE currency_wallet (
-    user_id INT NOT NULL,
-    balance INT NOT NULL DEFAULT 0,
+    user_id    INT NOT NULL,
+    balance    INT NOT NULL DEFAULT 0,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP,
-
     PRIMARY KEY (user_id),
-
     CONSTRAINT fk_wallet_user FOREIGN KEY (user_id)
-        REFERENCES user (user_id) ON DELETE CASCADE,
-
+        REFERENCES `user` (user_id) ON DELETE CASCADE,
     CONSTRAINT chk_wallet_balance
         CHECK (balance >= 0)
 );
 
 -- CURRENCY_TRANSACTION
 CREATE TABLE currency_transaction (
-    transaction_id INT NOT NULL AUTO_INCREMENT,
-    user_id INT NOT NULL,
-    amount INT NOT NULL,
-    transaction_type ENUM('EARN','SPEND') NOT NULL,
+    transaction_id     INT NOT NULL AUTO_INCREMENT,
+    user_id            INT NOT NULL,
+    amount             INT NOT NULL,
+    transaction_type   ENUM('EARN','SPEND') NOT NULL,
     transaction_reason VARCHAR(255) NOT NULL,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
+    created_at         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (transaction_id),
-
     CONSTRAINT fk_currency_user FOREIGN KEY (user_id)
-        REFERENCES user (user_id) ON DELETE CASCADE,
-
+        REFERENCES `user` (user_id) ON DELETE CASCADE,
     CONSTRAINT chk_transaction_amount
         CHECK (amount > 0)
 );
-
