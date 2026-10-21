@@ -6,67 +6,50 @@ USE trafficplayers_db;
 
 
 -- Create Tables (1/3) : Klutz
-
--- USER
-CREATE TABLE user (
-    user_id INT NOT NULL AUTO_INCREMENT,
-    username VARCHAR(100) NOT NULL,
+CREATE TABLE `user` (
+    user_id       INT NOT NULL AUTO_INCREMENT,
+    username      VARCHAR(50) NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    last_login DATETIME DEFAULT NULL,
-
+    created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_login    DATETIME DEFAULT NULL,
     PRIMARY KEY (user_id),
-    UNIQUE KEY uq_username (username)
+    UNIQUE KEY uq_user_username (username)
 );
 
--- USAGE_SESSION
 CREATE TABLE usage_session (
-    session_id INT NOT NULL AUTO_INCREMENT,
-    user_id INT NOT NULL,
-    started_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    ended_at DATETIME DEFAULT NULL,
-    duration_seconds INT NOT NULL DEFAULT 0,
-
+    session_id       INT NOT NULL AUTO_INCREMENT,
+    user_id          INT NOT NULL,
+    started_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ended_at         DATETIME DEFAULT NULL,
+    duration_seconds INT GENERATED ALWAYS AS (
+        IF(ended_at IS NOT NULL, TIMESTAMPDIFF(SECOND, started_at, ended_at), 0)
+    ) STORED,
     PRIMARY KEY (session_id),
-
     CONSTRAINT fk_session_user FOREIGN KEY (user_id)
-        REFERENCES user (user_id) ON DELETE CASCADE,
-
-    CONSTRAINT chk_session_duration
-        CHECK (duration_seconds >= 0),
-
-    CONSTRAINT chk_session_dates
-        CHECK (ended_at IS NULL OR ended_at >= started_at)
+        REFERENCES `user` (user_id) ON DELETE CASCADE
 );
 
--- MEDIA
 CREATE TABLE media (
-    media_id INT NOT NULL AUTO_INCREMENT,
-    user_id INT NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    media_type ENUM('MP3','MP4','YOUTUBE') NOT NULL,
-    source_location VARCHAR(2048) NOT NULL,
-    date_added DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
+    media_id        INT NOT NULL AUTO_INCREMENT,
+    user_id         INT NOT NULL,
+    title           VARCHAR(255) NOT NULL,
+    media_type      ENUM('MP3', 'MP4', 'YOUTUBE') NOT NULL,
+    source_location VARCHAR(500) NOT NULL,
+    date_added      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (media_id),
-
     CONSTRAINT fk_media_user FOREIGN KEY (user_id)
-        REFERENCES user (user_id) ON DELETE CASCADE
+        REFERENCES `user` (user_id) ON DELETE CASCADE
 );
 
--- PLAYLIST
 CREATE TABLE playlist (
-    playlist_id INT NOT NULL AUTO_INCREMENT,
-    user_id INT NOT NULL,
-    playlist_name VARCHAR(150) NOT NULL,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
+    playlist_id   INT NOT NULL AUTO_INCREMENT,
+    user_id       INT NOT NULL,
+    playlist_name VARCHAR(100) NOT NULL,
+    created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (playlist_id),
-
     CONSTRAINT fk_playlist_user FOREIGN KEY (user_id)
-        REFERENCES user (user_id) ON DELETE CASCADE
+        REFERENCES `user` (user_id) ON DELETE CASCADE
 );
-
 
 
 -- Create Tables (2/3) : Zenn
