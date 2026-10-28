@@ -153,3 +153,125 @@ CREATE TABLE currency_transaction (
     CONSTRAINT chk_transaction_amount
         CHECK (amount > 0)
 );
+-- ------------------------------------------------------------------------------------------------------------
+
+-- Populate Tables: Phoenix
+
+INSERT INTO user
+	(username, password_hash, created_at)
+VALUES
+	('Kirkilicious', 'kirkkirksahur', CURRENT_TIMESTAMP),
+    ('EPD445', 'cupcakes', CURRENT_TIMESTAMP),
+    ('Obamna', 'itdobelikethat', CURRENT_TIMESTAMP),
+    ('Yo_Mama', 'kirkity', CURRENT_TIMESTAMP),
+    ('Netanyahu', 'ISRAELL', CURRENT_TIMESTAMP);
+    
+
+INSERT INTO usage_session
+	(user_id, started_at)
+VALUES
+	(1, CURRENT_TIMESTAMP),
+    (2, CURRENT_TIMESTAMP),
+    (3, CURRENT_TIMESTAMP),
+    (4, CURRENT_TIMESTAMP),
+    (5, CURRENT_TIMESTAMP);
+
+
+INSERT INTO media
+	(user_id, title, media_type, source_location, date_added)
+VALUES
+	(1, 'Yuno Miles', 'MP3',  'IDFK', CURRENT_TIMESTAMP),
+    (2, 'After Dark', 'MP4',  'IDFK', CURRENT_TIMESTAMP),
+    (3, 'N95', 'YOUTUBE',  'IDFK', CURRENT_TIMESTAMP),
+    (4, 'Lag Train', 'MP3',  'IDFK', CURRENT_TIMESTAMP),
+    (5, 'Rendevous', 'MP4',  'IDFK', CURRENT_TIMESTAMP);
+    
+
+INSERT INTO playlist
+	(user_id, playlist_name, created_at)
+VALUES
+	(1, 'Freak Off', CURRENT_TIMESTAMP),
+    (2, 'Relapse', CURRENT_TIMESTAMP),
+    (3, 'LOCK_IN', CURRENT_TIMESTAMP),
+    (4, 'Depressy', CURRENT_TIMESTAMP),
+    (5, 'Relapse2', CURRENT_TIMESTAMP);
+ 
+
+INSERT INTO achievement
+	(achievement_name, description, requirement_value, currency_reward)
+VALUES
+	('Move_Out', 'Leave your childhood home', 8, 90),
+    ('Quit_League', 'Take a shower', 7, 80),
+    ('Quit_Hoyo', 'HOYO WILL NEVER BE KIND', 6, 70),
+    ('Have_Grandkids', 'Lock in', 5, 60),
+    ('Take_a_Shower', 'Take a shower bruh', 4, 50);
+
+
+INSERT INTO user_achievement
+	(user_id, achievement_id, unlocked_at)
+VALUES
+	(1, 1, CURRENT_TIMESTAMP),
+    (2, 2, CURRENT_TIMESTAMP),
+    (3, 3, CURRENT_TIMESTAMP),
+    (4, 4, CURRENT_TIMESTAMP),
+    (5, 5, CURRENT_TIMESTAMP);
+    
+
+INSERT INTO skin
+	(skin_name, rarity, skin_asset_path)
+VALUES
+	('Verity', 'LEGENDARY', 'Desktop'),
+    ('TCP', 'COMMON', 'Trashbin'),
+    ('Ateneo', 'RARE', 'UnderUrBed'),
+    ('Traffic', 'EPIC', 'UnderUrNose'),
+    ('Israel', 'LEGENDARY', 'Tel Aviv');
+    
+
+INSERT INTO user_skin
+	(user_id, skin_id, obtained_at, is_equipped)
+VALUES
+	(1, 1, CURRENT_TIMESTAMP, 1),
+    (2, 2, CURRENT_TIMESTAMP, 0),
+    (3, 3, CURRENT_TIMESTAMP, 1),
+    (4, 4, CURRENT_TIMESTAMP, 0),
+    (5, 5, CURRENT_TIMESTAMP, 1);
+    
+
+INSERT INTO playlist_media
+	(playlist_id, media_id, position, added_at)
+VALUES
+	(1, 1, 8, CURRENT_TIMESTAMP),
+    (2, 2, 7, CURRENT_TIMESTAMP),
+    (3, 3, 6, CURRENT_TIMESTAMP),
+    (4, 4, 5, CURRENT_TIMESTAMP),
+    (5, 5, 4, CURRENT_TIMESTAMP);
+    
+
+INSERT INTO gacha_transaction
+	(user_id, skin_id, currency_spent, drawn_at)
+VALUES
+	(1, 1, 1000, CURRENT_TIMESTAMP),
+    (2, 2, 2000, CURRENT_TIMESTAMP),
+    (3, 3, 3000, CURRENT_TIMESTAMP),
+    (4, 4, 4000, CURRENT_TIMESTAMP),
+    (5, 5, 5000, CURRENT_TIMESTAMP);
+    
+
+INSERT INTO currency_wallet
+	(user_id, balance, updated_at)
+VALUES
+	(1, 10000, CURRENT_TIMESTAMP),
+    (2, 10000, CURRENT_TIMESTAMP),
+    (3, 10000, CURRENT_TIMESTAMP),
+    (4, 10000, CURRENT_TIMESTAMP),
+    (5, 10000, CURRENT_TIMESTAMP);
+    
+
+INSERT INTO currency_transaction
+	(user_id, amount, transaction_type, transaction_reason, created_at)
+VALUES
+	(1, 1000, 'SPEND', 'pull', CURRENT_TIMESTAMP),
+    (2, 2000, 'EARN', 'buy', CURRENT_TIMESTAMP),
+    (3, 3000, 'SPEND', 'pull', CURRENT_TIMESTAMP),
+    (4, 1000, 'EARN', 'buy', CURRENT_TIMESTAMP),
+    (5, 2000, 'SPEND', 'pull', CURRENT_TIMESTAMP);
