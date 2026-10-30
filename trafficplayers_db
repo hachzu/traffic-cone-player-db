@@ -275,3 +275,18 @@ VALUES
     (3, 3000, 'SPEND', 'pull', CURRENT_TIMESTAMP),
     (4, 1000, 'EARN', 'buy', CURRENT_TIMESTAMP),
     (5, 2000, 'SPEND', 'pull', CURRENT_TIMESTAMP);
+
+SHOW TABLES;
+
+SELECT * FROM `user`;
+SELECT * FROM usage_session;
+SELECT * FROM media;
+SELECT * FROM playlist;
+SELECT * FROM achievement;
+SELECT * FROM user_achievement;
+SELECT * FROM skin;
+SELECT * FROM user_skin;
+SELECT * FROM playlist_media;
+SELECT * FROM gacha_transaction;
+SELECT * FROM currency_wallet;
+SELECT * FROM currency_transaction;
